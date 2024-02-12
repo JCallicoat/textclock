@@ -1,4 +1,8 @@
+#include <inttypes.h>
+#include <stdio.h> // IWYU pragma: export
+
 #include "util.h"
+#include "xcbft.h"
 
 void testCookie(xcb_void_cookie_t cookie, xcb_connection_t *connection,
                 char *errMessage) {
@@ -17,6 +21,7 @@ xcb_intern_atom_reply_t *getAtom(xcb_connection_t *connection, char *name,
   return xcb_intern_atom_reply(connection, cookie, NULL);
 }
 
+#ifdef XFONT
 xcb_gc_t getFontGC(xcb_connection_t *connection, xcb_screen_t *screen,
                    xcb_window_t window, const char *font_name) {
   /* get font */
@@ -29,7 +34,7 @@ xcb_gc_t getFontGC(xcb_connection_t *connection, xcb_screen_t *screen,
   /* create graphics context */
   xcb_gcontext_t gc = xcb_generate_id(connection);
   uint32_t mask = XCB_GC_FOREGROUND | XCB_GC_BACKGROUND | XCB_GC_FONT;
-  uint32_t value_list[3] = {0xAA3F51B5, screen->black_pixel, font};
+  uint32_t value_list[3] = {FONTCOLOR, screen->black_pixel, font};
 
   xcb_void_cookie_t gcCookie =
       xcb_create_gc_checked(connection, gc, window, mask, value_list);
@@ -45,7 +50,7 @@ xcb_gc_t getFontGC(xcb_connection_t *connection, xcb_screen_t *screen,
 }
 
 void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
-              xcb_window_t window, int16_t x1, int16_t y1, const char *label) {
+              xcb_window_t window, int16_t x1, int16_t y1, char *label) {
   /* get graphics context */
   xcb_gcontext_t gc = getFontGC(connection, screen, window, XFONT);
 
@@ -60,6 +65,58 @@ void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
 
   testCookie(gcCookie, connection, "can't free gc");
 }
+#endif
+
+#ifdef XFTFONT
+void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
+              xcb_window_t window, int16_t x1, int16_t y1, char *label) {
+
+  FcStrSet *fontsearch;
+  struct xcbft_patterns_holder font_patterns;
+  struct utf_holder text;
+  struct xcbft_face_holder faces;
+  xcb_render_color_t text_color;
+
+  // The fonts to use and the text in unicode
+  char *searchlist = XFTFONT;
+  text = char_to_uint32(label);
+
+  // extract the fonts in a list
+  fontsearch = xcbft_extract_fontsearch_list(searchlist);
+  // do the search and it returns all the matching fonts
+  font_patterns = xcbft_query_fontsearch_all(fontsearch);
+  // no need for the fonts list anymore
+  FcStrSetDestroy(fontsearch);
+  // get the dpi from the resources or the screen if not available
+  long dpi = xcbft_get_dpi(connection);
+  // load the faces related to the matching fonts patterns
+  faces = xcbft_load_faces(font_patterns, dpi);
+  // no need for the matching fonts patterns
+  xcbft_patterns_holder_destroy(font_patterns);
+
+  // select a specific color
+  text_color.red = (uint16_t)((FONTCOLOR) >> 8) & 0xFF00;
+  text_color.green = (uint16_t)((FONTCOLOR) >> 8) & 0x00FF;
+  text_color.blue = (uint16_t)((FONTCOLOR) << 8) & 0xFF00;
+  text_color.alpha = (uint16_t)((FONTCOLOR) >> 16) & 0xFF00;
+
+  // printf("r:0x%X, g:0x%X, b:0x%X, a:0x%X\n", text_color.red,
+  // text_color.green,
+  //        text_color.blue, text_color.alpha);
+
+  // draw on the drawable (pixmap here) pmap at position (50,60) the text
+  // with the color we chose and the faces we chose
+  xcbft_draw_text(connection, // X connection
+                  window,     // win or pixmap
+                  x1, y1,     // x, y
+                  text,       // text
+                  text_color, faces, dpi);
+
+  // no need for the text and the faces
+  utf_holder_destroy(text);
+  xcbft_face_holder_destroy(faces);
+}
+#endif
 
 void drawTime(xcb_connection_t *connection, xcb_screen_t *screen,
               xcb_window_t window, int16_t x1, int16_t y1) {

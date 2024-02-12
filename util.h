@@ -1,8 +1,5 @@
-#include <inttypes.h> // IWYU pragma: export
-#include <stdio.h>    // IWYU pragma: export
-#include <stdlib.h>   // IWYU pragma: export
-#include <string.h>   // IWYU pragma: export
-#include <unistd.h>
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
@@ -10,15 +7,15 @@
 
 #define WIDTH 160
 #define HEIGHT 40
-
 #define XPOS 0
 #define YPOS 40
 
 #define BORDERWIDTH 0
-
 #define TIMEFORMAT "%a %b %d %I:%M %p"
 
 #define XFONT "7x14bold"
+// #define XFTFONT "CascadiaMono:pixelsize=14,monospace:pixelsize=14\n"
+#define FONTCOLOR 0xFF3F51B5
 
 typedef struct MotifHints {
   uint32_t flags;
@@ -34,11 +31,10 @@ void testCookie(xcb_void_cookie_t cookie, xcb_connection_t *connection,
 xcb_intern_atom_reply_t *getAtom(xcb_connection_t *connection, char *name,
                                  uint8_t only_if_exists);
 
-xcb_gc_t getFontGC(xcb_connection_t *connection, xcb_screen_t *screen,
-                   xcb_window_t window, const char *font_name);
-
 void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
-              xcb_window_t window, int16_t x1, int16_t y1, const char *label);
+              xcb_window_t window, int16_t x1, int16_t y1, char *label);
 
 void drawTime(xcb_connection_t *connection, xcb_screen_t *screen,
               xcb_window_t window, int16_t x1, int16_t y1);
+
+#endif // UTIL_H

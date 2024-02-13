@@ -1,5 +1,5 @@
 #include <inttypes.h>
-#include <stdio.h> // IWYU pragma: export
+#include <stdio.h>
 
 #include "util.h"
 #include "xcbft.h"
@@ -94,15 +94,15 @@ void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
   // no need for the matching fonts patterns
   xcbft_patterns_holder_destroy(font_patterns);
 
-  // select a specific color
-  text_color.red = (uint16_t)((FONTCOLOR) >> 8) & 0xFF00;
-  text_color.green = (uint16_t)((FONTCOLOR) >> 8) & 0x00FF;
-  text_color.blue = (uint16_t)((FONTCOLOR) << 8) & 0xFF00;
-  text_color.alpha = (uint16_t)((FONTCOLOR) >> 16) & 0xFF00;
+  // FIXME: this is pretty ugly is there a better way to do this?
+  // FONTCOLOR is a uint32_t with pattern 0xAARRGGBB
+  text_color.alpha = ((FONTCOLOR) >> 16) & 0xFF00; // top 8 bits as uint16_t
+  text_color.red = ((FONTCOLOR) >> 8) & 0xFF00;    // next 8 bits as unit16_t
+  text_color.green = (((FONTCOLOR) >> 8) & 0x00FF) << 8; // etc
+  text_color.blue = ((FONTCOLOR) << 8) & 0xFF00;         // etc
 
   // printf("r:0x%X, g:0x%X, b:0x%X, a:0x%X\n", text_color.red,
-  // text_color.green,
-  //        text_color.blue, text_color.alpha);
+  // text_color.green, text_color.blue, text_color.alpha);
 
   // draw on the drawable (pixmap here) pmap at position (50,60) the text
   // with the color we chose and the faces we chose

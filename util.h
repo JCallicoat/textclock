@@ -14,8 +14,10 @@
 #define TIMEFORMAT "%a %b %d %I:%M %p"
 
 #define XFONT "7x14bold"
-// #define XFTFONT "CascadiaMono:pixelsize=14,monospace:pixelsize=14\n"
-#define FONTCOLOR 0xFF3F51B5
+// #define XFTFONT
+// "CascadiaMono:style=bold:pixelsize=14,monospace:pixelsize=14\n"
+
+#define FONTCOLOR ((uint32_t)0xFF3F51B5)
 
 typedef struct MotifHints {
   uint32_t flags;

@@ -504,14 +504,14 @@ FT_Vector xcbft_draw_text(xcb_connection_t *c,    // conn
 
   // finally render using the repeated pen color on the picture
   // (which is related to the pixmap)
-  xcb_render_util_composite_text(c,                       // connection
-                                 XCB_RENDER_PICT_OP_OVER, // op
-                                 fg_pen,                  // src
-                                 picture,                 // dst
-                                 0,                       // fmt
-                                 0,                       // src x
-                                 0,                       // src y
-                                 ts);                     // txt stream
+  xcb_render_util_composite_text(c,                      // connection
+                                 XCB_RENDER_PICT_OP_SRC, // op
+                                 fg_pen,                 // src
+                                 picture,                // dst
+                                 0,                      // fmt
+                                 0,                      // src x
+                                 0,                      // src y
+                                 ts);                    // txt stream
 
   xcb_render_util_composite_text_free(ts);
   xcb_render_free_picture(c, picture);

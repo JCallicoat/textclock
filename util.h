@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef UTIL_H_
+#define UTIL_H_
 
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
@@ -14,7 +14,7 @@
 #define TIMEFORMAT "%a %b %d %I:%M %p"
 
 #define XFONT "7x14bold"
-// #define XFTFONT
+// #define XFTFONT \
 // "CascadiaMono:style=bold:pixelsize=14,monospace:pixelsize=14\n"
 
 #define FONTCOLOR ((uint32_t)0xFF3F51B5)
@@ -39,4 +39,4 @@ void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
 void drawTime(xcb_connection_t *connection, xcb_screen_t *screen,
               xcb_window_t window, int16_t x1, int16_t y1);
 
-#endif // UTIL_H
+#endif // UTIL_H_

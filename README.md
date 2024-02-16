@@ -43,4 +43,7 @@ Config is just harcoded in util.h so edit that if you want to change anything:
 **NOTE:** Only define **one** of `XFONT` or `XFTFONT` or it won't compile.
 
 
+Credits
+=======
 
+Uses utf8.h and xcbft.h from https://github.com/venam/fonts-for-xcb

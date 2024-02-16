@@ -34,7 +34,7 @@ xcb_gc_t getFontGC(xcb_connection_t *connection, xcb_screen_t *screen,
   /* create graphics context */
   xcb_gcontext_t gc = xcb_generate_id(connection);
   uint32_t mask = XCB_GC_FOREGROUND | XCB_GC_BACKGROUND | XCB_GC_FONT;
-  uint32_t value_list[3] = {FONTCOLOR, screen->black_pixel, font};
+  uint32_t value_list[3] = {FONTCOLOR, BGCOLOR, font};
 
   xcb_void_cookie_t gcCookie =
       xcb_create_gc_checked(connection, gc, window, mask, value_list);

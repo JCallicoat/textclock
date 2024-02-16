@@ -35,7 +35,7 @@ int main() {
 
   uint32_t mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
   uint32_t values[2];
-  values[0] = screen->black_pixel;
+  values[0] = BGCOLOR;
   values[1] = XCB_EVENT_MASK_KEY_RELEASE | XCB_EVENT_MASK_BUTTON_PRESS |
               XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_POINTER_MOTION;
 

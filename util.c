@@ -1,8 +1,8 @@
 #include <inttypes.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "util.h"
-#include "xcbft.h"
 
 void testCookie(xcb_void_cookie_t cookie, xcb_connection_t *connection,
                 char *errMessage) {
@@ -68,6 +68,8 @@ void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
 #endif
 
 #ifdef XFTFONT
+#include "xcbft.h"
+
 void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
               xcb_window_t window, int16_t x1, int16_t y1, char *label) {
 
@@ -94,12 +96,11 @@ void drawText(xcb_connection_t *connection, xcb_screen_t *screen,
   // no need for the matching fonts patterns
   xcbft_patterns_holder_destroy(font_patterns);
 
-  // FIXME: this is pretty ugly is there a better way to do this?
   // FONTCOLOR is a uint32_t with pattern 0xAARRGGBB
-  text_color.alpha = ((FONTCOLOR) >> 16) & 0xFF00; // top 8 bits as uint16_t
-  text_color.red = ((FONTCOLOR) >> 8) & 0xFF00;    // next 8 bits as unit16_t
-  text_color.green = (((FONTCOLOR) >> 8) & 0x00FF) << 8; // etc
-  text_color.blue = ((FONTCOLOR) << 8) & 0xFF00;         // etc
+  text_color.alpha = ((FONTCOLOR >> 24) & 0xFF) * 257; // top 8 bits as uint16_t
+  text_color.red = ((FONTCOLOR >> 16) & 0xFF) * 257;   // next 8 bits
+  text_color.green = ((FONTCOLOR >> 8) & 0xFF) * 257;  // etc
+  text_color.blue = (FONTCOLOR & 0xFF) * 257;          // etc
 
   // printf("r:0x%X, g:0x%X, b:0x%X, a:0x%X\n", text_color.red,
   // text_color.green, text_color.blue, text_color.alpha);

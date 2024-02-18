@@ -31,8 +31,9 @@ Config is just harcoded in util.h so edit that if you want to change anything:
 #define TIMEFORMAT "%a %b %d %I:%M %p"
 
 #define XFONT "7x14bold"
-// #define XFTFONT \
-// "CascadiaMono:style=bold:pixelsize=14,monospace:pixelsize=14\n"
+/*
+#define XFTFONT "CascadiaMono:style=bold:pixelsize=14,monospace:pixelsize=14\n"
+*/
 
 #define BGCOLOR ((uint32_t)0x00000000)
 #define FONTCOLOR ((uint32_t)0xFF3F51B5)
@@ -40,10 +41,10 @@ Config is just harcoded in util.h so edit that if you want to change anything:
 
 `BGCOLOR` and `FONTCOLOR` are in 0xAARRGGBB
 
-**NOTE:** Only define **one** of `XFONT` or `XFTFONT` or it won't compile.
+**NOTE:** Only define **one** of `XFONT` or `XFTFONT` or it won't compile. `XFTFONT` is a freetype search string.
 
 
 Credits
 =======
 
-Uses utf8.h and xcbft.h from https://github.com/venam/fonts-for-xcb
+Uses utf8.h and xcbft.h from https://github.com/venam/fonts-for-xcb for freetype fonts

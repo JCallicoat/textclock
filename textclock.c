@@ -1,10 +1,17 @@
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #include "util.h"
 
-int main() {
+int main(int argc, char **argv) {
+
+  if (!parse_args(argc, argv)) {
+    return 1;
+  }
+
   /* get the connection */
   int screenNum;
   xcb_connection_t *connection = xcb_connect(NULL, &screenNum);
@@ -35,14 +42,14 @@ int main() {
 
   uint32_t mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
   uint32_t values[2];
-  values[0] = BGCOLOR;
+  values[0] = options.bg_color;
   values[1] = XCB_EVENT_MASK_KEY_RELEASE | XCB_EVENT_MASK_BUTTON_PRESS |
               XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_POINTER_MOTION;
 
   xcb_void_cookie_t windowCookie = xcb_create_window_checked(
-      connection, screen->root_depth, window, screen->root, XPOS, YPOS, WIDTH,
-      HEIGHT, BORDERWIDTH, XCB_WINDOW_CLASS_INPUT_OUTPUT, screen->root_visual,
-      mask, values);
+      connection, screen->root_depth, window, screen->root, options.xpos,
+      options.ypos, options.width, options.height, options.border_width,
+      XCB_WINDOW_CLASS_INPUT_OUTPUT, screen->root_visual, mask, values);
 
   testCookie(windowCookie, connection, "can't create window");
 
@@ -139,7 +146,7 @@ int main() {
       switch (event->response_type & ~0x80) {
       default:
       case XCB_EXPOSE: {
-        drawTime(connection, screen, window, 10, HEIGHT - 14);
+        drawTime(connection, screen, window, 10, options.height - 14);
         break;
       }
       case XCB_KEY_RELEASE: {
@@ -166,7 +173,7 @@ int main() {
     }
     slept += 50 + usleep(50 * 1000); // 50ms
     if (slept >= 1000) {
-      drawTime(connection, screen, window, 10, HEIGHT - 14);
+      drawTime(connection, screen, window, 10, options.height - 14);
       slept = 0;
     }
   }

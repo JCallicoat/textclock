@@ -1,25 +1,27 @@
 #ifndef UTIL_H_
 #define UTIL_H_
 
+#include <stdbool.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xproto.h>
 
-#define WIDTH 160
-#define HEIGHT 40
-#define XPOS 0
-#define YPOS 40
+typedef struct Options {
+  bool show_help;
+  uint32_t fg_color;
+  uint32_t bg_color;
+  uint16_t width;
+  uint16_t height;
+  uint16_t xpos;
+  uint16_t ypos;
+  uint8_t border_width;
+  const char *time_format;
+  bool use_freetype;
+  const char *xfont;
+  const char *xftfont;
+} Options;
 
-#define BORDERWIDTH 0
-#define TIMEFORMAT "%a %b %d %I:%M %p"
-
-#define XFONT "7x14bold"
-/*
-#define XFTFONT "CascadiaMono:style=bold:pixelsize=14,monospace:pixelsize=14\n"
-*/
-
-#define BGCOLOR ((uint32_t)0x00000000)
-#define FONTCOLOR ((uint32_t)0xFF3F51B5)
+extern Options options;
 
 typedef struct MotifHints {
   uint32_t flags;
@@ -28,6 +30,8 @@ typedef struct MotifHints {
   int32_t input_mode;
   uint32_t status;
 } Hints;
+
+bool parse_args(int argc, char **argv);
 
 void testCookie(xcb_void_cookie_t cookie, xcb_connection_t *connection,
                 char *errMessage);

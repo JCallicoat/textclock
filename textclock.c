@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "util.h"
+#include "xproto.h"
 
 int main(int argc, char **argv) {
 
@@ -74,31 +75,49 @@ int main(int argc, char **argv) {
   xcb_intern_atom_cookie_t *ewmhCookie = xcb_ewmh_init_atoms(connection, &ewmh);
   xcb_ewmh_init_atoms_replies(&ewmh, ewmhCookie, NULL);
 
+  xcb_atom_t window_type = ewmh._NET_WM_WINDOW_TYPE_NORMAL;
+
+  if (options.is_dock) {
+    window_type = ewmh._NET_WM_WINDOW_TYPE_DOCK;
+  }
+
   xcb_change_property(connection, XCB_PROP_MODE_REPLACE, window,
                       ewmh._NET_WM_WINDOW_TYPE, XCB_ATOM_ATOM, 32, 1,
-                      &ewmh._NET_WM_WINDOW_TYPE_NORMAL);
+                      &window_type);
 
-  xcb_change_property(connection, XCB_PROP_MODE_REPLACE, window,
-                      ewmh._NET_WM_STATE, XCB_ATOM_ATOM, 32, 1,
-                      &ewmh._NET_WM_STATE_ABOVE);
+  if (options.on_top) {
+    xcb_change_property(connection, XCB_PROP_MODE_APPEND, window,
+                        ewmh._NET_WM_STATE, XCB_ATOM_ATOM, 32, 1,
+                        &ewmh._NET_WM_STATE_ABOVE);
 
-  /*
-  // allegedly we should tell the wm this through a message...
-  // but doesn't seem needed?
-  xcb_client_message_event_t payload = {
-      .response_type = XCB_CLIENT_MESSAGE,
-      .type = EWMH._NET_WM_STATE,
-      .format = 32,
-      .window = window,
-      .data = {.data32[0] = 1, // _NET_WM_STATE_ADD
-               .data32[1] = EWMH._NET_WM_STATE_ABOVE,
-               .data32[2] = XCB_ATOM_NONE}};
+    /*
+      // allegedly we should tell the wm this through a message...
+      // but doesn't seem needed?
+      xcb_client_message_event_t payload = {
+          .response_type = XCB_CLIENT_MESSAGE,
+          .type = ewmh._NET_WM_STATE,
+          .format = 32,
+          .window = window,
+          .data = {.data32[0] = 1, // _NET_WM_STATE_ADD
+                   .data32[1] = ewmh._NET_WM_STATE_ABOVE,
+                   .data32[2] = XCB_ATOM_NONE}};
 
-  xcb_send_event(connection, 1, window,
-                 XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
-                     XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
-                 (const char *)&payload);
-   */
+      xcb_send_event(connection, 1, window,
+                     XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
+                         XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
+                     (const char *)&payload);
+    */
+  }
+
+  if (options.skip_taskbar) {
+    xcb_change_property(connection, XCB_PROP_MODE_APPEND, window,
+                        ewmh._NET_WM_STATE, XCB_ATOM_ATOM, 32, 1,
+                        &ewmh._NET_WM_STATE_SKIP_PAGER);
+
+    xcb_change_property(connection, XCB_PROP_MODE_APPEND, window,
+                        ewmh._NET_WM_STATE, XCB_ATOM_ATOM, 32, 1,
+                        &ewmh._NET_WM_STATE_SKIP_TASKBAR);
+  }
 
   xcb_ewmh_connection_wipe(&ewmh);
 

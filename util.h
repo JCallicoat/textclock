@@ -19,6 +19,9 @@ typedef struct Options {
   bool use_freetype;
   const char *xfont;
   const char *xftfont;
+  bool on_top;
+  bool skip_taskbar;
+  bool is_dock;
 } Options;
 
 extern Options options;

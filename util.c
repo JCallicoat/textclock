@@ -26,64 +26,102 @@ Options options = {
 
 bool parse_args(int argc, char **argv) {
 
-  kgflags_bool("help", options.show_help, "Print this help", false,
-               &options.show_help);
-
   const char *fg_color_string = NULL;
-  kgflags_string("fg-color", "0xFF3F51B5",
+  kgflags_string("fg-color",
+                 "0xFF3F51B5", // default
                  "32-bit color string of the form 0xAARRGGBB",
                  false, // required
                  &fg_color_string);
 
   const char *bg_color_string = NULL;
-  kgflags_string("bg-color", "0x00000000",
+  kgflags_string("bg-color",
+                 "0x00000000", // default
                  "32-bit color string of the form 0xAARRGGBB",
                  false, // required
                  &bg_color_string);
 
   int width = options.width;
-  kgflags_int("width", width, "Width of the window",
+  kgflags_int("width",
+              width, // default
+              "Width of the window",
               false, // required
               &width);
 
   int height = options.height;
-  kgflags_int("height", height, "Height of the window",
+  kgflags_int("height",
+              height, // default
+              "Height of the window",
               false, // required
               &height);
 
   int xpos = options.xpos;
-  kgflags_int("xpos", xpos, "X position of the window",
+  kgflags_int("xpos",
+              xpos, // default
+              "X position of the window",
               false, // required
               &xpos);
 
   int ypos = options.ypos;
-  kgflags_int("ypos", ypos, "Y position of the window",
+  kgflags_int("ypos",
+              ypos, // default
+              "Y position of the window",
               false, // required
               &ypos);
 
-  int border_width = options.border_width;
-  kgflags_int("border_width", border_width, "Border width of window",
-              false, // required
-              &border_width);
+  // int border_width = options.border_width;
+  // kgflags_int("border-width",
+  //             border_width, // default
+  //             "Border width of window",
+  //             false, // required
+  //             &border_width);
 
   const char *time_format_string = malloc(255 * sizeof(char));
-  kgflags_string("time-format", options.time_format, "Time format for clock",
+  kgflags_string("time-format",
+                 options.time_format, // default
+                 "Time format for clock",
                  false, // required
                  &time_format_string);
 
   const char *xfont_string = malloc(512 * sizeof(char));
-  kgflags_string("xfont", options.xfont, "X font to use (see xlsfonts)",
+  kgflags_string("xfont",
+                 options.xfont, // default
+                 "X font to use (see xlsfonts)",
                  false, // required
                  &xfont_string);
 
   const char *xftfont_string = malloc(512 * sizeof(char));
-  kgflags_string("xftfont", options.xftfont, "Freetype font search string",
+  kgflags_string("xftfont",
+                 options.xftfont, // default
+                 "Freetype font search string",
                  false, // required
                  &xftfont_string);
 
-  kgflags_bool("freetype", options.use_freetype,
+  kgflags_bool("freetype",
+               options.use_freetype, // default
                "Use FreeType font (uses xftfont value)", false,
                &options.use_freetype);
+
+  kgflags_bool("on-top",
+               true, // default
+               "Adds hints to stay on top (_NET_WM_STATE_ABOVE)",
+               false, // required
+               &options.on_top);
+
+  kgflags_bool("skip-taskbar",
+               false, // default
+               "Adds hints to skip taskbar and pager "
+               "(_NET_WM_STATE_SKIP_TASKBAR | _NET_WM_STATE_SKIP_PAGER)",
+               false, // required
+               &options.skip_taskbar);
+
+  kgflags_bool("is-dock",
+               options.is_dock, // default
+               "Sets the window to be a dock (_NET_WM_WINOW_TYPE_DOCK)",
+               false, // required
+               &options.is_dock);
+
+  kgflags_bool("help", options.show_help, "Print this help", false,
+               &options.show_help);
 
   if (!kgflags_parse(argc, argv)) {
     kgflags_print_errors();
@@ -108,7 +146,7 @@ bool parse_args(int argc, char **argv) {
   options.xpos = (uint16_t)xpos;
   options.ypos = (uint16_t)ypos;
 
-  options.border_width = (uint16_t)border_width;
+  // options.border_width = (uint16_t)border_width;
 
   options.time_format = time_format_string;
 

@@ -17,18 +17,16 @@ To see what it looks like run `make run`
 
 To install to ~/.local/bin run `make install`
 
+A desktop file will also be added to ~/.local/share/applications/textclock.desktop
+
 Configuration
 =============
 
-Options are configurable via cli flags. See `--help`:
+Options are configurable via cli flags. See `-h` / `--help`:
 
 ```shell
 Usage of ./textclock:
 Flags:
-        --help, --no-help       (boolean, optional)
-                Default: False
-                Print this help
-
         --fg-color      (string, optional)
                 Default: 0xFF3F51B5
                 32-bit color string of the form 0xAARRGGBB
@@ -53,10 +51,6 @@ Flags:
                 Default: 0
                 Y position of the window
 
-        --border_width  (integer, optional)
-                Default: 0
-                Border width of window
-
         --time-format   (string, optional)
                 Default: %a %b %d %I:%M %p
                 Time format for clock
@@ -72,6 +66,23 @@ Flags:
         --freetype, --no-freetype       (boolean, optional)
                 Default: False
                 Use FreeType font (uses xftfont value)
+
+        --on-top, --no-on-top   (boolean, optional)
+                Default: True
+                Adds hints to stay on top (_NET_WM_STATE_ABOVE)
+
+        --skip-taskbar, --no-skip-taskbar       (boolean, optional)
+                Default: False
+                Adds hints to skip taskbar and pager (_NET_WM_STATE_SKIP_TASKBAR | _NET_WM_STATE_SKIP_PAGER)
+
+        --is-dock, --no-is-dock (boolean, optional)
+                Default: False
+                Sets the window to be a dock (_NET_WM_WINOW_TYPE_DOCK)
+
+        --help, --no-help       (boolean, optional)
+                Default: False
+                Print this help
+
 ```
 
 Credits

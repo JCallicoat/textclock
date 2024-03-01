@@ -129,6 +129,15 @@ bool parse_args(int argc, char **argv) {
     return false;
   }
 
+  int non_flag_count = kgflags_get_non_flag_args_count();
+  for (int i = 0; i < non_flag_count; ++i) {
+    const char *arg = kgflags_get_non_flag_arg(i);
+    if (strncmp(arg, "-h", 2) == 0) {
+      options.show_help = true;
+      break;
+    }
+  }
+
   if (options.show_help) {
     kgflags_print_usage();
     return false;

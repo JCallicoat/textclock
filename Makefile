@@ -13,3 +13,5 @@ run: textclock
 
 install: textclock
 	install -D -m0755  textclock $(HOME)/.local/bin
+	sed -i "s|@@|$(HOME)|" textclock.desktop
+	install -D -m0644  textclock.desktop $(HOME)/.local/share/applications

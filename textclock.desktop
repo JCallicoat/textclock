@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=Textclock
+Comment=Start textclock
+Exec=/home/sage/.local/bin/textclock --ypos 84 --width 160 --skip-taskbar
+Icon=clock
+Type=Application
+Categories=System;
